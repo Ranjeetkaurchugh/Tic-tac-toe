@@ -1,0 +1,176 @@
+import java.util.Scanner;
+import java.util.Random;
+class Board{
+   static char[][] Borad;
+    public Board(){
+        Borad=new char[3][3];
+        intitBoard();
+        
+    }
+  static  void   intitBoard(){
+        for(int i=0;i<Borad.length;i++){
+            for(int j=0;j<Borad[i].length;j++){
+                Borad[i][j]=' ';
+            }
+        }
+    }
+   static void display(){
+        System.out.println("_____________");
+        for(int i=0;i<Borad.length;i++){
+            System.out.print("| ");
+            for(int j=0;j<Borad[i].length;j++){
+                System.out.print(Borad[i][j]+" | ");
+               
+            }
+            System.out.println();
+             System.out.println("_____________");
+            
+        }
+    }
+    static void  placeMarks(int row,int col,char mark){
+        if(row>=0&&row<=2&&col>=0&&col<=2){
+        Borad[row][col]=mark;
+        }else{
+            System.out.println("INVALID POSTION");
+        }
+    }
+    static boolean  checkcolwin(){
+        for(int j=0;j<=2;j++){
+            if(Borad[0][j]!=' '&&Borad[0][j]==Borad[1][j]&&Borad[1][j]==Borad[2][j]){
+                return true;
+            }
+        }
+        return false;
+    }
+    static boolean   checkrowwin(){
+        for(int i=0;i<=2;i++){
+            if(Borad[i][0]!=' '&&Borad[i][0]==Borad[i][1]&&Borad[i][1]==Borad[i][2]){
+                return true;
+            }
+        }
+        return false;
+    }
+   static boolean   diawin(){
+        if(Borad[0][0]!=' '&&Borad[0][0]==Borad[1][1]
+        &&Borad[1][1]==Borad[2][2]
+        || Borad[0][2]!=' '&&Borad[0][2]==Borad[1][1]
+        &&Borad[1][1]==Borad[2][0]){
+            return true;
+        }
+        return false;
+    }
+    static boolean checkDraw(){
+        for(int i=0;i<=2;i++){
+            for(int j=0;j<=2;j++){
+                if(Borad[i][j]==' '){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+abstract class Player{
+    String name;
+    char mark;
+   
+    abstract void makemove();
+     boolean isvalidMove(int row,int col){
+         if(row>=0&&row<=2&&col>=0&&col<=2){
+             if(Board.Borad[row][col]==' '){
+                 return true;
+             }
+             
+         }
+         return false;
+         
+     }
+    
+}
+class Humanplayer extends Player{
+    Humanplayer(String name,char mark)
+{
+        this.name=name;
+        this.mark=mark;
+    }
+    
+   
+     void makemove(){
+         Scanner s=new Scanner(System.in);
+         int row;
+         int col;
+         do{
+             System.out.print("Enter the row and col");
+              row=s.nextInt();
+              col=s.nextInt();
+             
+         }while(!isvalidMove(row,col));
+         Board.placeMarks(row,col,mark);
+         
+     }
+    
+    
+}
+class AIplayer extends Player{
+   AIplayer(String name,char mark)
+{
+        this.name=name;
+        this.mark=mark;
+    }
+   
+     void makemove(){
+         Scanner s=new Scanner(System.in);
+         int row;
+         int col;
+         do{
+             Random r=new Random();
+        //   System.out.print("Enter the row and col");
+              row=r.nextInt(3);
+              col=r.nextInt(3);
+             
+         }while(!isvalidMove(row,col));
+         Board.placeMarks(row,col,mark);
+         
+     }
+     
+    
+}
+
+
+
+
+
+public class Main
+{
+	public static void main(String[] args) {
+	    System.out.println("*---WELLCOME TO TIC TAC TOE GAME---*");
+		Board b=new Board();
+		Humanplayer p1=new Humanplayer("Ranjeet ",'X');
+		AIplayer p2=new AIplayer("radha",'0');
+ 
+		Player cp;
+		cp=p1;
+		while(true){
+		    System.out.println(cp.name+" turn's");
+		cp.makemove();
+		Board.display();
+		if(Board.checkcolwin()||Board.checkrowwin()||Board.diawin()){
+		    System.out.println(cp.name+" Hurry has won!!");
+		    break;
+		}
+		else if(Board.checkDraw()){
+		    System.out.println("OOPs!!Game Draw");
+		    break;
+		}
+		else{
+		if(cp==p1){
+		    cp=p2;
+		}
+		else{
+		    cp=p1;
+		}
+		}
+		}
+		
+	}
+}
